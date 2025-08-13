@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sugarcane Disease Detection Results</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
+</head>
+<body>
+
+<header>
+  <h1>Sugarcane Disease Detection Results</h1>
+</header>
+
+<main>
+  {% if results %}
+    {% for r in results %}
+      <div class="result-card">
+        <h2>File: {{ r.filename }}</h2>
+
+        <div class="images-row">
+          <div>
+            <h3>Ring Spot Detection</h3>
+            <img src="{{ r.det_image }}" alt="Ring Spot Detection">
+          </div>
+          <div>
+            <h3>Yellow Leaf Segmentation</h3>
+            <img src="{{ r.seg_image }}" alt="Yellow Leaf Segmentation">
+          </div>
+        </div>
+
+        <div class="results-info">
+          <p>
+            Ring Spot: 
+            {% if r.final_decision.ring_spot %}
+              <span class="disease-yes">Detected ({{ "%.2f"|format(r.final_decision.ring_prob * 100) }}%)</span>
+            {% else %}
+              <span class="disease-no">Not Detected ({{ "%.2f"|format(r.final_decision.ring_prob * 100) }}%)</span>
+            {% endif %}
+          </p>
+          <p>
+            Yellow Leaf: 
+            {% if r.final_decision.yellow_leaf %}
+              <span class="disease-yes">Detected ({{ "%.2f"|format(r.final_decision.yellow_prob * 100) }}%)</span>
+            {% else %}
+              <span class="disease-no">Not Detected ({{ "%.2f"|format(r.final_decision.yellow_prob * 100) }}%)</span>
+            {% endif %}
+          </p>
+          <p>
+            <strong>Overall:</strong> 
+            {% if r.final_decision.overall %}
+              <span class="disease-yes">Possible Disease Present</span>
+            {% else %}
+              <span class="disease-no">No Disease Detected</span>
+            {% endif %}
+          </p>
+        </div>
+      </div>
+      <hr>
+    {% endfor %}
+  {% else %}
+    <p>No results to display. Please go back and upload images.</p>
+  {% endif %}
+
+  <div style="margin-top: 20px; text-align:center;">
+    <a href="{{ url_for('index') }}">
+      <button>Run Another Detection</button>
+    </a>
+  </div>
+</main>
+
+<style>
+.result-card {
+  background: #fff;
+  padding: 1rem;
+  border: 2px solid black;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+.images-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.images-row div {
+  flex: 1;
+  min-width: 280px;
+  text-align: center;
+}
+.images-row img {
+  max-width: 100%;
+  border: 2px solid black;
+  border-radius: 8px;
+}
+.results-info p {
+  font-size: 1rem;
+}
+</style>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smart Crop Disease Advisor</title>
+<link rel="stylesheet" href="/static/style1.css">
+<style>
+body { font-family: Arial, sans-serif; background: #f4f9f4; margin: 0; padding: 0; }
+.tabs { display: flex; background: #2d6a4f; color: white; }
+.tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; }
+.tab.active { background: #40916c; font-weight: bold; }
+.tab-content { display: none; padding: 20px; animation: fadeIn 0.4s ease-in-out; }
+.tab-content.active { display: block; }
+.big-btn { padding: 12px 18px; font-size: 16px; margin-top: 10px; border-radius: 8px; cursor: pointer; border: none; }
+.primary { background: #40916c; color: white; }
+.secondary { background: #95d5b2; color: black; }
+.image-preview img { max-width: 150px; margin: 5px; border-radius: 8px; border: 2px solid #74c69d; }
+#cameraView { width: 100%; max-height: 300px; border-radius: 10px; margin-top: 10px; display: none; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" data-tab="step1">Step 1: Capture / Upload</div>
+  <div class="tab" data-tab="step2">Step 2: Questions</div>
+  <div class="tab" data-tab="step3">Step 3: Conclusion</div>
+</div>
+
+<!-- Step 1 -->
+<div id="step1" class="tab-content active">
+  <h2>📸 Take or Upload Leaf Photos</h2>
+  <input id="fileInput" type="file" name="images" accept="image/*" capture="environment" multiple />
+  <button id="startCam" class="big-btn secondary">📷 Use Live Camera</button>
+  <video id="cameraView" autoplay playsinline></video>
+  <div class="image-preview" id="preview"></div>
+  <button id="uploadBtn" class="big-btn primary">Next ➡</button>
+</div>
+
+<!-- Step 2 -->
+<div id="step2" class="tab-content">
+  <h2>📝 Answer a Few Questions</h2>
+  <div id="questionBox"></div>
+  <button id="yesBtn" class="big-btn primary" style="display:none;">Yes</button>
+  <button id="noBtn" class="big-btn secondary" style="display:none;">No</button>
+</div>
+
+<!-- Step 3 -->
+<div id="step3" class="tab-content">
+  <h2>🌾 Expert Conclusion & Advice</h2>
+  <div id="summary"></div>
+</div>
+
+<script>
+let detectedClasses = [];
+let questions = {};
+let answers = { yellow: [], ring: [] };
+let currentDisease = '';
+let currentQIndex = 0;
+let questionOrder = [];
+let tabnetResp = null;
+
+// Expert farmer-friendly recommendations
+const diseaseRecommendations = {
+  yellow: {
+    name: "Yellow Leaf Disease",
+    suggestion: `
+      🌱 Remove and burn badly affected leaves.<br>
+      💧 Improve drainage; avoid standing water.<br>
+      🧴 Mix 2½ spoons Mancozeb in 10 L water & spray both sides of leaves in morning/evening.<br>
+      🔄 Repeat after 10 days if yellowing continues.
+    `,
+    prevention: `
+      ✅ Use healthy seedlings.<br>
+      ✅ Rotate crops each season.<br>
+      ✅ Apply balanced fertilizers.
+    `
+  },
+  ring: {
+    name: "Ringspot Disease",
+    suggestion: `
+      🌱 Remove infected leaves immediately.<br>
+      🧴 Mix 50 ml neem oil or 1 spoon Imidacloprid in 10 L water & spray evenly.<br>
+      ⏰ Spray in morning/evening.<br>
+      🔄 Repeat after 7 days if spots persist.
+    `,
+    prevention: `
+      ✅ Avoid overcrowding.<br>
+      ✅ Keep field weed-free.<br>
+      ✅ Treat at first sign of spots.
+    `
+  }
+};
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+// Camera start
+document.getElementById('startCam').addEventListener('click', async () => {
+  const video = document.getElementById('cameraView');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    video.srcObject = stream;
+    video.style.display = 'block';
+  } catch (err) {
+    alert("Camera not available or permission denied.");
+  }
+});
+
+// Preview images
+document.getElementById('fileInput').addEventListener('change', function() {
+  const preview = document.getElementById('preview');
+  preview.innerHTML = '';
+  for (let f of this.files) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(f);
+  }
+});
+
+// Upload
+document.getElementById('uploadBtn').addEventListener('click', () => {
+  const fd = new FormData();
+  const fileInput = document.getElementById('fileInput');
+  for (let f of fileInput.files) fd.append('images', f);
+
+  fetch('/upload', { method: 'POST', body: fd })
+    .then(res => res.json())
+    .then(data => {
+      detectedClasses = data.detected_classes;
+      questions = data.questions;
+      prepareQuestionOrder();
+      switchTab('step2');
+      showNextQuestion();
+    });
+});
+
+// Prepare question order
+function prepareQuestionOrder() {
+  questionOrder = [];
+  if (detectedClasses.includes('yellow')) questionOrder.push(...questions.yellow.map(q => ({ disease: 'yellow', q })));
+  if (detectedClasses.includes('ring')) questionOrder.push(...questions.ring.map(q => ({ disease: 'ring', q })));
+}
+
+// Show next question
+function showNextQuestion() {
+  if (currentQIndex >= questionOrder.length) {
+    fetch('/predict_disease', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ answers })
+    })
+    .then(res => res.json())
+    .then(data => { tabnetResp = data; renderSummary(); switchTab('step3'); });
+    return;
+  }
+  currentDisease = questionOrder[currentQIndex].disease;
+  document.getElementById('questionBox').innerHTML = questionOrder[currentQIndex].q;
+  document.getElementById('yesBtn').style.display = 'inline-block';
+  document.getElementById('noBtn').style.display = 'inline-block';
+}
+
+// Answer buttons
+document.getElementById('yesBtn').addEventListener('click', () => { answers[currentDisease].push(1); currentQIndex++; showNextQuestion(); });
+document.getElementById('noBtn').addEventListener('click', () => { answers[currentDisease].push(0); currentQIndex++; showNextQuestion(); });
+
+// Render final summary
+function renderSummary() {
+  const summary = document.getElementById('summary');
+  summary.innerHTML = '';
+
+  const diseases = [];
+  ['yellow','ring'].forEach(d => {
+    const yolopresent = detectedClasses.includes(d);
+    const userArr = answers[d] || [];
+    const userYes = userArr.length ? (userArr.reduce((a,b)=>a+b,0) >= Math.ceil(userArr.length/2)) : false;
+    const tabnetObj = (tabnetResp && tabnetResp[d]) ? tabnetResp[d] : null;
+    const tabnetYes = tabnetObj && tabnetObj.prob > 0.5;
+    if (yolopresent || userYes || tabnetYes) diseases.push(d);
+  });
+
+  diseases.forEach(d => {
+    const rec = diseaseRecommendations[d];
+    const prob = tabnetResp && tabnetResp[d] ? (tabnetResp[d].prob*100).toFixed(1) : 'N/A';
+    summary.innerHTML += `
+      <h3>${rec.name} – Probability: ${prob}%</h3>
+      <p><b>What to do now:</b><br>${rec.suggestion}</p>
+      <p><b>How to prevent:</b><br>${rec.prevention}</p>
+      <hr>
+    `;
+  });
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelector(`.tab[data-tab="${id}"]`).classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+No.,Question,Feature Name
+Q1,Are the leaf tips turning yellow?,yellow_tip
+Q2,Is the yellowing starting from the midrib?,midrib_yellowing
+Q3,Are the leaves showing orange discoloration?,orange_discolor
+Q4,Are the plant growth rates lower than usual?,low_growth
+Q5,Is there leaf curling or drooping?,leaf_curl
+Q6,Are there concentric ring-like patterns on the leaves?,ring_patterns
+Q7,Are there dark brown or necrotic spots on leaves?,necrotic_spots
+Q8,Are older leaves more affected than newer ones?,old_leaf_impact
+Q9,Has there been aphid infestation in the past month?,aphids_present
+Q10,Has the crop been under high humidity recently?,high_humidity
+Q11,Are more than 20% of plants in the field showing these symptoms?,field_spread
+Q12,Are there signs of viral streaks on the leaves?,viral_streaks
+Q13,Is there a noticeable reduction in sucrose content?,low_sugar_content
+Q14,Are leaves brittle or easy to snap?,brittle_leaves
+Q15,Is there any purpling of leaves?,purple_discolor
+Q16,Are the leaf margins showing yellow halos?,yellow_margins
+Q17,Are affected leaves also dry or withered?,withered_leaves
+Q18,Was there a fungal infection detected recently?,fungal_history
+Q19,Is the affected area expanding each week?,symptom_expanding
+Q20,Is there a decrease in juice purity during processing?,low_juice_purity

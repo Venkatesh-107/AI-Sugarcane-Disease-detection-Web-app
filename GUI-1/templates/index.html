@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sugarcane Disease Checker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
+ 
+</head>
+<body>
+<header>
+  <h1>Sugarcane Disease & Insect Checker</h1>
+</header>
+
+<main>
+
+  <!-- New explanation section for unknown users -->
+  <section id="appExplanation">
+    <h2>Welcome to the Sugarcane Disease Checker</h2>
+    <p>
+      This web app helps farmers and agronomists detect two common sugarcane diseases: <strong>Yellow Leaf Disease</strong> and <strong>Ring Spot Disease</strong>.
+    </p>
+    <p>
+      You can upload images of your sugarcane leaves, or use your device camera to capture photos directly. The app will analyze the images to identify if these diseases are present.
+    </p>
+    <p>
+      Additionally, you can answer a short questionnaire about the symptoms observed in your plants. Combining both image detection and symptom questionnaire, the app will provide a final health assessment summary.
+    </p>
+    <p>
+      Please start by uploading images or opening your camera, then proceed to answer the questionnaire and submit to see the diagnosis.
+    </p>
+  </section>
+
+  <h2>Upload images for ring spot & yellow leaf detection</h2>
+
+  <form id="diseaseForm" action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="images" accept="image/*" multiple id="fileInput" required>
+    <br>
+    <!-- Camera and other buttons -->
+    <button type="button" id="openCameraBtn">Open Camera</button>
+    <button type="button" id="captureBtn" style="display:none;">Capture Photo</button>
+    <button type="button" id="cancelCameraBtn" style="display:none;">Cancel Camera</button>
+    <button type="button" id="clearFilesBtn">Clear Files</button>
+    <br>
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <br>
+    <button type="submit">Run Detection</button>
+  </form>
+
+  <hr>
+
+  <h2>Disease Questionnaire</h2>
+
+  <!-- Toggle button group with 2 options only -->
+  <div id="questionTypeSelector">
+    <div class="toggle-btn active" data-type="yellow">Yellow Leaf</div>
+    <div class="toggle-btn" data-type="ring">Ring Spot</div>
+  </div>
+
+  <form id="questionnaireForm">
+    <div id="questionsContainer"></div>
+    <button type="submit">Submit Questionnaire</button>
+  </form>
+
+  <div id="questionnaireResult" style="margin-top:20px;"></div>
+
+  <hr>
+
+  <h2>Final Health Assessment Summary</h2>
+  <div id="finalSummary" style="font-weight:bold; margin-top: 15px;"></div>
+  <hr>
+  
+</main>
+
+<script>
+  // Load questions from backend
+  const yellowQuestions = [
+    {% for q in yellow_questions %}
+      `{{ q }}`,
+    {% endfor %}
+  ];
+  const ringQuestions = [
+    {% for q in ring_questions %}
+      `{{ q }}`,
+    {% endfor %}
+  ];
+
+  const container = document.getElementById('questionsContainer');
+  const toggleButtons = document.querySelectorAll('#questionTypeSelector .toggle-btn');
+
+  let currentType = 'yellow';
+  let answers = [];
+
+  // Helper: render questions based on type
+  function renderQuestions(type) {
+    container.innerHTML = '';
+    if(type === 'yellow'){
+      answers = Array(yellowQuestions.length).fill(0);
+      yellowQuestions.forEach((q, i) => {
+        container.appendChild(createQuestionElem(q, i));
+      });
+    } else if(type === 'ring'){
+      answers = Array(ringQuestions.length).fill(0);
+      ringQuestions.forEach((q, i) => {
+        container.appendChild(createQuestionElem(q, i));
+      });
+    }
+  }
+
+  // Create question element with Yes/No toggle buttons
+  function createQuestionElem(questionText, index) {
+    const div = document.createElement('div');
+    div.style.marginBottom = '12px';
+
+    const p = document.createElement('p');
+    p.textContent = `Q${index+1}: ${questionText}`;
+    div.appendChild(p);
+
+    const yesBtn = document.createElement('button');
+    yesBtn.type = 'button';
+    yesBtn.textContent = 'Yes';
+    yesBtn.style.marginRight = '8px';
+
+    const noBtn = document.createElement('button');
+    noBtn.type = 'button';
+    noBtn.textContent = 'No';
+
+    yesBtn.addEventListener('click', () => {
+      answers[index] = 1;
+      yesBtn.style.backgroundColor = 'green';
+      yesBtn.style.color = 'white';
+      noBtn.style.backgroundColor = '#eee';
+      noBtn.style.color = 'black';
+    });
+
+    noBtn.addEventListener('click', () => {
+      answers[index] = 0;
+      noBtn.style.backgroundColor = 'red';
+      noBtn.style.color = 'white';
+      yesBtn.style.backgroundColor = '#eee';
+      yesBtn.style.color = 'black';
+    });
+
+    div.appendChild(yesBtn);
+    div.appendChild(noBtn);
+
+    return div;
+  }
+
+  // Toggle question type buttons
+  toggleButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(btn.classList.contains('active')) return;
+      toggleButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentType = btn.getAttribute('data-type');
+      renderQuestions(currentType);
+      document.getElementById('questionnaireResult').textContent = '';
+      document.getElementById('finalSummary').textContent = '';
+    });
+  });
+
+  // Initial render
+  renderQuestions(currentType);
+
+  // Handle questionnaire submission
+  document.getElementById('questionnaireForm').addEventListener('submit', e => {
+    e.preventDefault();
+    if(answers.includes(0) && answers.includes(1) === false){
+      alert("Please answer all questions.");
+      return;
+    }
+    // Simple logic: if sum answers >= half of questions, disease present
+    const sum = answers.reduce((a,b)=>a+b,0);
+    const present = sum >= answers.length / 2;
+    const resDiv = document.getElementById('questionnaireResult');
+    resDiv.textContent = present ? `Based on questionnaire, ${currentType === 'yellow' ? 'Yellow Leaf Disease' : 'Ring Spot Disease'} is likely present.` : "Based on questionnaire, disease likely absent.";
+
+    // Also update final summary
+    updateFinalSummary();
+  });
+
+  // Update final summary based on detection results and questionnaire
+  function updateFinalSummary(){
+    const resultsDiv = document.getElementById('results');
+    const qResultText = document.getElementById('questionnaireResult').textContent;
+
+    let yellowDetected = false;
+    let ringDetected = false;
+
+    // Parse detection results from #results children
+    [...resultsDiv.children].forEach(child => {
+      if(child.dataset.disease === 'yellow' && child.dataset.present === 'true'){
+        yellowDetected = true;
+      }
+      if(child.dataset.disease === 'ring' && child.dataset.present === 'true'){
+        ringDetected = true;
+      }
+    });
+
+    let summary = "Final Summary: ";
+    if(yellowDetected && ringDetected){
+      summary += "Both Yellow Leaf and Ring Spot diseases detected.";
+    } else if(yellowDetected){
+      summary += "Yellow Leaf Disease detected.";
+    } else if(ringDetected){
+      summary += "Ring Spot Disease detected.";
+    } else {
+      summary += "No diseases detected in images.";
+    }
+
+    if(qResultText.includes("likely present")){
+      summary += " Questionnaire also indicates possible disease presence.";
+    } else {
+      summary += " Questionnaire indicates disease likely absent.";
+    }
+
+    document.getElementById('finalSummary').textContent = summary;
+  }
+
+  // Camera & Image upload functionality (unchanged)
+  const openCameraBtn = document.getElementById('openCameraBtn');
+  const captureBtn = document.getElementById('captureBtn');
+  const cancelCameraBtn = document.getElementById('cancelCameraBtn');
+  const clearFilesBtn = document.getElementById('clearFilesBtn');
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const fileInput = document.getElementById('fileInput');
+  const form = document.getElementById('diseaseForm');
+
+  let stream;
+
+  openCameraBtn.addEventListener('click', async () => {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      video.srcObject = stream;
+      video.style.display = 'block';
+      openCameraBtn.style.display = 'none';
+      captureBtn.style.display = 'inline-block';
+      cancelCameraBtn.style.display = 'inline-block';
+      fileInput.disabled = true;
+      clearFilesBtn.disabled = true;
+    } catch (err) {
+      alert('Could not access camera: ' + err);
+    }
+  });
+
+  captureBtn.addEventListener('click', () => {
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0);
+    canvas.toBlob(blob => {
+      const file = new File([blob], `captured_${Date.now()}.png`, { type: 'image/png' });
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      fileInput.files = dataTransfer.files;
+    });
+    stopCamera();
+  });
+
+  cancelCameraBtn.addEventListener('click', () => {
+    stopCamera();
+  });
+
+  function stopCamera(){
+    if(stream){
+      stream.getTracks().forEach(track => track.stop());
+      stream = null;
+    }
+    video.style.display = 'none';
+    openCameraBtn.style.display = 'inline-block';
+    captureBtn.style.display = 'none';
+    cancelCameraBtn.style.display = 'none';
+    fileInput.disabled = false;
+    clearFilesBtn.disabled = false;
+  }
+
+  clearFilesBtn.addEventListener('click', () => {
+    fileInput.value = '';
+    document.getElementById('results').innerHTML = '';
+    document.getElementById('finalSummary').textContent = '';
+  });
+
+  // On form submit, we just submit normally (handled by backend)
+</script>
+</body>
+</html>
+

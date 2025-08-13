@@ -1,0 +1,21 @@
+No.,Question,Feature
+Q1,Are the leaf tips turning yellow?,yellow_tip
+Q2,Is the yellowing starting from the midrib?,midrib_yellowing
+Q3,Are the leaves showing orange discoloration?,orange_discolor
+Q4,Is yellowing uniform across the leaf?,uniform_yellowing
+Q5,Does the discoloration progress from the base to the tip?,discoloration_progression
+Q6,Are there signs of chlorosis on the leaves?,chlorosis_signs
+Q7,Is the yellowing more prominent on older leaves?,old_leaf_yellowing
+Q8,Is leaf necrosis visible near yellowed areas?,necrosis_near_yellow
+Q9,Is the midrib thickened or hardened?,midrib_thickened
+Q10,Is yellowing persistent under different weather?,persistent_yellowing
+Q11,Are the plants stunted or growing slowly?,yellow_stunting
+Q12,Are margins of leaves yellow with green centers?,marginal_yellowing
+Q13,Are the affected areas symmetrical on both sides of the leaf?,symmetrical_yellowing
+Q14,Are interveinal areas yellow while veins remain green?,interveinal_yellow
+Q15,Are there signs of reduced chlorophyll content?,low_chlorophyll
+Q16,Is the canopy lighter in color than usual?,pale_canopy
+Q17,Is yellowing associated with nutrient deficiency?,nutrient_deficiency_signs
+Q18,Has yellowing been increasing over the weeks?,yellow_spread
+Q19,Is yellowing accompanied by withering?,yellow_withering
+Q20,Does the discoloration reduce overall yield?,yellow_affect_yield

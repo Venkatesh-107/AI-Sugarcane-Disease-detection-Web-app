@@ -1,0 +1,9 @@
+flask
+ultralytics
+torch
+pillow
+joblib
+pandas
+scikit-learn
+pytorch-tabnet
+

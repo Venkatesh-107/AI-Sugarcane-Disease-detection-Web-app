@@ -1,0 +1,21 @@
+No.,Question,Feature
+Q1,Are there concentric ring-like spots on the leaves?,ring_patterns
+Q2,Are ring spots brown with yellow halos?,brown_yellow_rings
+Q3,Are spots found mainly on the lower leaves?,lower_leaf_spots
+Q4,Do the ring spots have a target-board appearance?,target_like_rings
+Q5,Are spots circular and necrotic in the center?,necrotic_rings
+Q6,Are new leaves emerging with visible spots?,new_leaf_spots
+Q7,Do ring spots coalesce into larger patches?,ring_spread
+Q8,Is leaf curling present with spots?,curled_with_spots
+Q9,Are there reddish lesions around ring spots?,reddish_lesions
+Q10,Is there premature leaf drop in affected plants?,leaf_drop_rings
+Q11,Are affected leaves brittle or easily torn?,brittle_ring_leaves
+Q12,Are spots present on both upper and lower surfaces?,both_surface_spots
+Q13,Are other crops nearby affected similarly?,field_neighbor_infected
+Q14,Was there recent fungal infection in this field?,past_fungal_presence
+Q15,Are fungal spores visible under magnification?,visible_spores
+Q16,Are ring spots increasing despite fungicide use?,resistance_to_fungicide
+Q17,Has this disease occurred before on this plot?,recurring_ringspot
+Q18,Are insects like thrips or mites frequently observed?,insect_vector_present
+Q19,Are ring spots more frequent under humid conditions?,humidity_ring_relation
+Q20,Is yield reduction clearly associated with ring spotting?,rings_affect_yield

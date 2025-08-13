@@ -1,0 +1,258 @@
+body {
+  background: linear-gradient(135deg, #f0f4ff, #d6e0ff);
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+  padding: 1.2rem;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 150, 255, 0.3);
+  border-bottom: 3px solid #000; /* black border */
+  outline: 1px solid black; /* subtle black outline */
+  position: relative;
+  z-index: 10;
+}
+
+main {
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(100, 130, 250, 0.15);
+  border: 2px solid black; /* black outline for main container */
+}
+
+h2 {
+  color: #4a69bd;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, #ff8a00, #e52e71);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 1px 1px 1px black; /* subtle black shadow for contrast */
+}
+
+form {
+  margin-top: 1rem;
+}
+
+label {
+  display: block;
+  margin: 1.2rem 0 0.4rem;
+  font-weight: 600;
+  color: #444;
+  text-shadow: 0 0 1px black; /* subtle black text shadow */
+}
+
+input[type="file"] {
+  background-color: #e9f0ff;
+  color: #555;
+  padding: 0.7rem;
+  border: 2px solid #000; /* black border */
+  border-radius: 8px;
+  width: 100%;
+  font-weight: 600;
+  transition: border-color 0.3s ease;
+}
+
+input[type="file"]:focus {
+  outline: none;
+  border-color: #e52e71;
+  box-shadow: 0 0 8px #e52e71;
+}
+
+.camera-section {
+  margin: 1.5rem 0;
+}
+
+button {
+  background: linear-gradient(45deg, #ff6a00, #ee0979);
+  color: white;
+  padding: 1rem 1.6rem;
+  border: 2px solid black; /* black border */
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.4s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(238, 9, 121, 0.4);
+  text-shadow: 1px 1px 2px black;
+}
+
+button:hover {
+  background: linear-gradient(45deg, #ee0979, #ff6a00);
+  box-shadow: 0 6px 20px rgba(255, 106, 0, 0.7);
+  border-color: #000;
+}
+
+.question {
+  background: linear-gradient(135deg, #fff, #f0f8ff);
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 1px 4px rgba(100, 130, 250, 0.2);
+  color: #222;
+  font-weight: 600;
+  border: 1.5px solid black; /* black outline */
+}
+
+input[type="checkbox"] {
+  margin-right: 0.6rem;
+  accent-color: #ee0979;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  border: 1px solid black; /* checkbox border */
+  border-radius: 3px;
+  background-color: white;
+}
+
+video {
+  width: 100%;
+  max-height: 300px;
+  border-radius: 12px;
+  margin-top: 0.8rem;
+  box-shadow: 0 4px 12px rgba(100, 130, 250, 0.3);
+  border: 2px solid black; /* black outline */
+}
+
+canvas {
+  display: none;
+}
+
+/* Additional small touches */
+#results > div {
+  background: linear-gradient(145deg, #ffffff, #dceeff);
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(150, 190, 255, 0.3);
+  padding: 12px;
+  margin-bottom: 15px;
+  color: #222;
+  border: 2px solid black; /* black border */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#results img {
+  border-radius: 8px;
+  border: 2px solid black; /* black outline */
+  max-width: 100%;
+  margin-bottom: 8px;
+}
+
+.disease-yes {
+  color: green;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px black;
+}
+
+.disease-no {
+  color: red;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px black;
+}
+
+#video {
+  display: none;
+  max-width: 100%;
+  border: 2px solid black; /* black outline */
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+#captureBtn, #cancelCameraBtn, #openCameraBtn, #clearFilesBtn {
+  margin: 5px 10px 15px 0;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 2px solid black; /* black border */
+  background-color: white;
+  color: #0300ca;
+  font-weight: 600;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-shadow: none;
+}
+
+#captureBtn:hover, #cancelCameraBtn:hover, #openCameraBtn:hover, #clearFilesBtn:hover {
+  background-color: #007BFF;
+  color: white;
+  border-color: black;
+  box-shadow: 0 0 6px black;
+}
+
+/* New toggle button group styles */
+#questionTypeSelector {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.toggle-btn {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 2px solid black; /* black border */
+  border-radius: 30px;
+  background-color: white;
+  color: #000000;
+  font-weight: 600;
+  user-select: none;
+  transition: all 0.3s ease;
+  box-shadow: none;
+  min-width: 110px;
+  text-align: center;
+  text-shadow: none;
+}
+
+.toggle-btn:hover {
+  background-color: #e6f0ff;
+  border-color: black;
+  box-shadow: 0 0 5px black;
+}
+
+.toggle-btn.active {
+  background-color: #007BFF;
+  color: white;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+  border-color: black;
+}
+
+/* Yes/No buttons inside questions */
+#questionsContainer button {
+  border-radius: 6px;
+  border: 2px solid black; /* black border */
+  background-color: white;
+  color: #000000;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 5px 14px;
+  transition: all 0.3s ease;
+  user-select: none;
+  text-shadow: none;
+}
+
+#questionsContainer button:hover:not(.selected) {
+  background-color: #e6f0ff;
+  border-color: black;
+  box-shadow: 0 0 4px black;
+}
+
+/* Explanation section styles */
+#appExplanation {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 15px;
+  border: 2px solid black; /* black border */
+  border-radius: 8px;
+  background-color: #e6f0ff;
+  color: #004085;
+  box-shadow: 0 0 8px black;
+}
+
