@@ -36,15 +36,12 @@ It is designed to help farmers and researchers in **early diagnosis** and **impr
 
 ## 📷 Screenshots
 -**GUI 1**
-*(<img width="1854" height="1048" alt="Screenshot From 2025-08-10 14-21-41" src="https://github.com/user-attachments/assets/e75856fb-1d7c-4e64-8d1a-4e1f80f0aefa" />
-)*
-*(<img width="1854" height="1048" alt="Screenshot From 2025-08-10 14-23-29" src="https://github.com/user-attachments/assets/06609592-3eb9-4143-a45c-d6c61411a665" />
-)*
+*<img width="1854" height="1048" alt="Screenshot From 2025-08-10 14-21-41" src="https://github.com/user-attachments/assets/e75856fb-1d7c-4e64-8d1a-4e1f80f0aefa" />
+<img width="1854" height="1048" alt="Screenshot From 2025-08-10 14-23-29" src="https://github.com/user-attachments/assets/06609592-3eb9-4143-a45c-d6c61411a665" />
 -**GUI 2**
-*(<img width="1854" height="1048" alt="Screenshot From 2025-08-10 14-24-49" src="https://github.com/user-attachments/assets/4680cfbb-f84f-4474-9905-7048ede4ea21" />
-)*
-*(<img width="980" height="918" alt="Screenshot From 2025-08-10 14-30-31" src="https://github.com/user-attachments/assets/eb820389-5b2a-4206-8b35-b422b7b08ebb" />
-)*
+<img width="1854" height="1048" alt="Screenshot From 2025-08-10 14-24-49" src="https://github.com/user-attachments/assets/4680cfbb-f84f-4474-9905-7048ede4ea21" />
+<img width="980" height="918" alt="Screenshot From 2025-08-10 14-30-31" src="https://github.com/user-attachments/assets/eb820389-5b2a-4206-8b35-b422b7b08ebb" />
+
 ---
 
 ## 📂 Project Structure
